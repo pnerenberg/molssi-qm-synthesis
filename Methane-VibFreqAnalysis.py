@@ -29,20 +29,25 @@ psi4.set_output_file(file_prefix + '_vibfreq.dat', False)
 scf_energy, scf_wfn = psi4.frequency('scf/cc-pVDZ', molecule=ch4, return_wfn=True, dertype='gradient')
 
 # Save "raw" frequencies into a variable
-print(scf_wfn.frequency_analysis) # this command is just to get you started!
+#print(scf_wfn.frequency_analysis) # this command is just to get you started!
+print(scf_wfn.frequency_analysis['omega'][2])
+screaming = (scf_wfn.frequency_analysis['omega'][2])
+print(screaming)
 
 # Eliminate imaginary parts of frequencies,
 # round the frequencies (to the nearest whole number),
 # and extract only the *non-zero* frequencies
+real_screaming = np.real(screaming)
+round_screaming = np.round(real_screaming)
+nonzero_screaming = round_screaming[6:]
 
-
-# Determine the unique non-zero frequencies and 
+# Determine the unique non-zero frequencies and
 # the number of times each such frequency occurs;
-# store these in a NumPy array in the format: 
+# store these in a NumPy array in the format:
 # {frequency, count} (i.e, one line per freq.)
-
+full_screaming = np.array(np.unique(nonzero_screaming, return_counts=True))
+everyone_screaming = np.transpose(full_screaming)
 
 # Save the NumPy array with frequency and count data
 # to a text file
-
-
+np.savetxt(fname = 'screaming_frequencies.dat', X = everyone_screaming, fmt = '%dcm^-1  %d', header = 'First column is unique frequency, second column is their count')
