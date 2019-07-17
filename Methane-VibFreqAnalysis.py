@@ -47,7 +47,7 @@ freqNonZero = freqRound[6:]
 unique, counts = np.unique(freqNonZero, return_counts=True)
 # store these in a NumPy array in the format: 
 # {frequency, count} (i.e, one line per freq.)
-freqAndDegen = np.empty((3,2))
+freqAndDegen = np.empty((4,2))
 for i in range(3):
     freqAndDegen[i] = [unique[i], counts[i]]
 
