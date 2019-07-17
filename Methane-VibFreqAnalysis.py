@@ -32,13 +32,31 @@ scf_energy, scf_wfn = psi4.frequency('scf/cc-pVDZ', molecule=ch4, return_wfn=Tru
 print(scf_wfn.frequency_analysis) # this command is just to get you started!
 
 # Eliminate imaginary parts of frequencies,
-# round the frequencies (to the nearest whole number),
-# and extract only the *non-zero* frequencies
+print(scf_wfn.frequency_analysis['omega'])
+print(scf_wfn.frequency_analysis['omega'][2])
+freqs = scf_wfn.frequency_analysis['omega'][2]
 
+np.real(freqs)
+realfreq = np.real(freqs)
+
+# round the frequencies (to the nearest whole number),
+np.round(realfreq)
+
+# and extract only the *non-zero* frequencies
+np.round(realfreq[6:])
+print (np.round(realfreq[6:]))
+roundfreq = np.round(realfreq[6:])
 
 # Determine the unique non-zero frequencies and 
 # the number of times each such frequency occurs;
+unique,counts=np.unique(roundfreq,return_counts=True)
+print(unique)
+print(counts)
+x=np.transpose(np.vstack((unique,counts)))
+print(x)
+
 # store these in a NumPy array in the format: 
+np.savetxt(fname='CH4-frequencylist.dat', X=x, fmt='%.1f %d', delimiter=',', header='Freq Degen, **Kimberly Jarquin**' )
 # {frequency, count} (i.e, one line per freq.)
 
 
