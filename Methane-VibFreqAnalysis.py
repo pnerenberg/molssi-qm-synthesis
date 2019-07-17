@@ -38,7 +38,7 @@ clipped_omegaArray = omegaArrayReal[omegaArrayReal>10]
 #round each entry to an integer
 rounded_omegaArray = np.rint(clipped_omegaArray)
 
-#create an array with only unique frequencies 
+#create an array with only unique frequencies
 unique_omegaArray = np.unique(rounded_omegaArray)
 
 #define an empty two-column array
@@ -51,4 +51,4 @@ for i in range(len(unique_omegaArray)):
 print("List of Frequencies for %s \n\n" %(file_prefix), file=open("frequency_list.txt", "w"))
 
 for i in range(len(unique_omegaArray)):
-    print("%s:   Duplicity: %s   Frequency: %s" %(i, freqValArray[i,0],freqValArray[i,1]), file=open("frequency_list.txt", "a"))
+    print("%s:   Degeneracy: %s   Frequency: %s" %(i, freqValArray[i,0],freqValArray[i,1]), file=open("frequency_list.txt", "a"))
