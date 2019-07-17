@@ -17,32 +17,49 @@ symmetry c1
    H       -1.21639        1.43293        0.24076
 """)
 
-
 # Geometry optimization
 psi4.set_output_file(file_prefix + '_geomopt.dat', False)
 psi4.set_options({'g_convergence': 'gau_tight'})
 psi4.optimize('scf/cc-pVDZ', molecule=ch4)
 
-
 # Run vibrational frequency analysis
 psi4.set_output_file(file_prefix + '_vibfreq.dat', False)
 scf_energy, scf_wfn = psi4.frequency('scf/cc-pVDZ', molecule=ch4, return_wfn=True, dertype='gradient')
 
+import IPython
+IPython.embed()
+
 # Save "raw" frequencies into a variable
-print(scf_wfn.frequency_analysis) # this command is just to get you started!
+#print(scf_wfn.frequency_analysis) # this command is just to get you started!
+freakyfrequencies = scf_wfn.frequency_analysis['omega'][2]
 
 # Eliminate imaginary parts of frequencies,
-# round the frequencies (to the nearest whole number),
-# and extract only the *non-zero* frequencies
+np.real(freakyfrequencies)
+realfreaks = np.real(freakyfrequencies)
+print(realfreaks)
 
+# round the frequencies (to the nearest whole number),
+np.round(realfreaks)
+roundfreaks = np.round(realfreaks)
+print(roundfreaks)
+
+# and extract only the *non-zero* frequencies
+roundfreaks[6:]
+nonzerofreaks = roundfreaks[6:]
+print(nonzerofreaks)
 
 # Determine the unique non-zero frequencies and 
 # the number of times each such frequency occurs;
 # store these in a NumPy array in the format: 
-# {frequency, count} (i.e, one line per freq.)
+uniquefreaks = np.unique(nonzerofreaks, retun_counts = True)
 
+# {frequency, count} (i.e, one line per freq.)
+myfreaktest = np.array(np.unique(nonzerofreaks, return_counts+True)).T
+print(myfreaktest)
+np.transpose(myfreaktest)
+myfreaktest 
 
 # Save the NumPy array with frequency and count data
 # to a text file
-
+np.savetxt(fname='CH4-FreakList.dat', X=myfreaktest)
 
