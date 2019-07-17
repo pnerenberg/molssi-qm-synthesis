@@ -29,20 +29,25 @@ psi4.set_output_file(file_prefix + '_vibfreq.dat', False)
 scf_energy, scf_wfn = psi4.frequency('scf/cc-pVDZ', molecule=ch4, return_wfn=True, dertype='gradient')
 
 # Save "raw" frequencies into a variable
-print(scf_wfn.frequency_analysis) # this command is just to get you started!
-
+raw= (scf_wfn.frequency_analysis['omega'][2]) # this command is just to get you started!
 # Eliminate imaginary parts of frequencies,
+realfreqs= np.real(raw)
 # round the frequencies (to the nearest whole number),
+round= np.round(np.real(raw))
 # and extract only the *non-zero* frequencies
+nonzero= round[6:]
 
 
-# Determine the unique non-zero frequencies and 
+
+# Determine the unique non-zero frequencies and
+unique= np.unique(nonzero, return_counts=True)
 # the number of times each such frequency occurs;
-# store these in a NumPy array in the format: 
+# store these in a NumPy array in the format:
 # {frequency, count} (i.e, one line per freq.)
+bigarray= np.array(np.unique(nonzero,return_counts=True))
+tranArray=np.transpose(bigarray)
 
 
 # Save the NumPy array with frequency and count data
+finalShot=np.savetxt('try.txt', tranArray, fmt='%d %d', header="freq degen")
 # to a text file
-
-
