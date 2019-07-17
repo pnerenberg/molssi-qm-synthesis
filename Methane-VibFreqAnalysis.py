@@ -29,20 +29,26 @@ psi4.set_output_file(file_prefix + '_vibfreq.dat', False)
 scf_energy, scf_wfn = psi4.frequency('scf/cc-pVDZ', molecule=ch4, return_wfn=True, dertype='gradient')
 
 # Save "raw" frequencies into a variable
-print(scf_wfn.frequency_analysis) # this command is just to get you started!
+omegaEntry = scf_wfn.frequency_analysis["omega"].data
+omegaArrayReal = np.real(omegaEntry)
 
-# Eliminate imaginary parts of frequencies,
-# round the frequencies (to the nearest whole number),
-# and extract only the *non-zero* frequencies
+#only keep real entries with a real value of greater than 10
+clipped_omegaArray = omegaArrayReal[omegaArrayReal>10]
 
+#round each entry to an integer
+rounded_omegaArray = np.rint(clipped_omegaArray)
 
-# Determine the unique non-zero frequencies and 
-# the number of times each such frequency occurs;
-# store these in a NumPy array in the format: 
-# {frequency, count} (i.e, one line per freq.)
+#create an array with only unique frequencies 
+unique_omegaArray = np.unique(rounded_omegaArray)
 
+#define an empty two-column array
+freqValArray = np.empty((0,2), int)
+for i in range(len(unique_omegaArray)):
+    freq = np.count_nonzero(rounded_omegaArray == unique_omegaArray[i])
+    freqValArray = np.append(freqValArray, np.array([[freq, unique_omegaArray[i]]]), axis=0)
 
-# Save the NumPy array with frequency and count data
-# to a text file
+#Print data into text file called frequency_list.txt
+print("List of Frequencies for %s \n\n" %(file_prefix), file=open("frequency_list.txt", "w"))
 
-
+for i in range(len(unique_omegaArray)):
+    print("%s:   Duplicity: %s   Frequency: %s" %(i, freqValArray[i,0],freqValArray[i,1]), file=open("frequency_list.txt", "a"))
