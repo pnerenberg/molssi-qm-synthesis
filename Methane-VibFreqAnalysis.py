@@ -17,7 +17,6 @@ symmetry c1
    H       -1.21639        1.43293        0.24076
 """)
 
-
 # Geometry optimization
 psi4.set_output_file(file_prefix + '_geomopt.dat', False)
 psi4.set_options({'g_convergence': 'gau_tight'})
@@ -32,14 +31,31 @@ scf_energy, scf_wfn = psi4.frequency('scf/cc-pVDZ', molecule=ch4, return_wfn=Tru
 print(scf_wfn.frequency_analysis) # this command is just to get you started!
 
 # Eliminate imaginary parts of frequencies,
+print(scf_wfn.frequency_analysis)
+nemesisfreqs=np.array(scf_wfn.frequency_analysis['omega'][2])
+np.real(nemesisfreqs)
+realfreqs = np.real(nemesisfreqs)
+
 # round the frequencies (to the nearest whole number),
 # and extract only the *non-zero* frequencies
+np.round(realfreqs)
+roundfreqs = np.round(np.real(nemesisfreqs))
 
 
 # Determine the unique non-zero frequencies and 
 # the number of times each such frequency occurs;
 # store these in a NumPy array in the format: 
 # {frequency, count} (i.e, one line per freq.)
+roundfreqs[6:]
+nonzerofreqs = roundfreqs[6:]
+print(nonzerofreqs)
+np.count_nonzero(nonzerofreqs)
+x = np.array(nonzerofreqs)
+unique, counts = np.unique(nonzerofreqs, return_counts=True)
+dict(zip(unique, counts))
+x = np.array(np.unique(nonzerofreqs, return_counts=True))
+print(x)
+np.transpose(x)
 
 
 # Save the NumPy array with frequency and count data
