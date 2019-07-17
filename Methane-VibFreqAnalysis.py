@@ -1,5 +1,6 @@
 import psi4
 import numpy as np
+import pandas as pd
 
 # Initial setup
 psi4.set_memory('2 GB')
@@ -29,20 +30,22 @@ psi4.set_output_file(file_prefix + '_vibfreq.dat', False)
 scf_energy, scf_wfn = psi4.frequency('scf/cc-pVDZ', molecule=ch4, return_wfn=True, dertype='gradient')
 
 # Save "raw" frequencies into a variable
-print(scf_wfn.frequency_analysis) # this command is just to get you started!
+raw_omega_frequencies = scf_wfn.frequency_analysis['omega'][2]
 
 # Eliminate imaginary parts of frequencies,
 # round the frequencies (to the nearest whole number),
 # and extract only the *non-zero* frequencies
+real_omega_frequencies = np.real(np.around(raw_omega_frequencies))
 
 
 # Determine the unique non-zero frequencies and 
 # the number of times each such frequency occurs;
 # store these in a NumPy array in the format: 
 # {frequency, count} (i.e, one line per freq.)
+freqs_data,count_data = np.unique(real_omega_frequencies,return_counts=True)
+unique_omega_frequencies = pd.DataFrame([freqs_data,count_data]).transpose().rename(columns={0:'frequency',1:"count"})
 
 
 # Save the NumPy array with frequency and count data
 # to a text file
-
-
+unique_omega_frequencies.to_csv(file_prefix+"_frequency_analysis.dat")
