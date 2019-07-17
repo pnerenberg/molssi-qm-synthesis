@@ -25,24 +25,18 @@ psi4.optimize('scf/cc-pVDZ', molecule=ch4)
 
 
 # Run vibrational frequency analysis
-psi4.set_output_file(file_prefix + '_vibfreq.dat', False)
 scf_energy, scf_wfn = psi4.frequency('scf/cc-pVDZ', molecule=ch4, return_wfn=True, dertype='gradient')
 
 # Save "raw" frequencies into a variable
-print(scf_wfn.frequency_analysis) # this command is just to get you started!
+ifrequency=scf_wfn.frequency_analysis.get("omega").data
 
-# Eliminate imaginary parts of frequencies,
-# round the frequencies (to the nearest whole number),
-# and extract only the *non-zero* frequencies
+# Eliminate non-zero frequency.  NOTE, All must be in order
+frequency=np.round(ifrequency.real)[6:]
 
+# Condense the frequency lists to elimintat, but count duplicates
+tabfreq=np.array(np.unique(frequency,return_counts=True)).T
 
-# Determine the unique non-zero frequencies and 
-# the number of times each such frequency occurs;
-# store these in a NumPy array in the format: 
-# {frequency, count} (i.e, one line per freq.)
+#TODO one should and could try to pull more information, such as intensities or motions.
 
-
-# Save the NumPy array with frequency and count data
-# to a text file
-
-
+#Print to file
+np.savetxt(file_prefix + '_vibfreq.dat',tabfreq,'%d','\t\t\t',header="Freq (cm-1)\t\tDegen",footer="\n# Molecule's energy ="+str(scf_energy))
