@@ -43,7 +43,7 @@ real_omega_frequencies = np.real(np.around(raw_omega_frequencies))
 # store these in a NumPy array in the format: 
 # {frequency, count} (i.e, one line per freq.)
 freqs_data,count_data = np.unique(real_omega_frequencies,return_counts=True)
-unique_omega_frequencies = pd.DataFrame([freqs_data,count_data]).transpose().rename(columns={0:'frequency',1:"count"})
+unique_omega_frequencies = pd.DataFrame([freqs_data[1:],count_data[1:]]).transpose().rename(columns={0:'frequency',1:"count"})
 
 
 # Save the NumPy array with frequency and count data
