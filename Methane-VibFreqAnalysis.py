@@ -48,4 +48,4 @@ unique_omega_frequencies = pd.DataFrame([freqs_data[1:],count_data[1:]]).transpo
 
 # Save the NumPy array with frequency and count data
 # to a text file
-unique_omega_frequencies.to_csv(file_prefix+"_frequency_analysis.dat")
+unique_omega_frequencies.to_csv(file_prefix+"_frequency_analysis.dat",index=False)
