@@ -43,6 +43,6 @@ print(scf_wfn.frequency_analysis) # this command is just to get you started!
 
 
 # Save the NumPy array with frequency and count data
-# to a text file
+# to a text file with the header line: 'freq degen'
 
 
