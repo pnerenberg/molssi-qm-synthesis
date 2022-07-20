@@ -29,20 +29,40 @@ psi4.set_output_file(file_prefix + '_vibfreq.dat', False)
 scf_energy, scf_wfn = psi4.frequency('scf/cc-pVDZ', molecule=ch4, return_wfn=True, dertype='gradient')
 
 # Save "raw" frequencies into a variable
-print(scf_wfn.frequency_analysis) # this command is just to get you started!
+#print(scf_wfn.frequency_analysis) # this command is just to get you started!
+raw_vibfreq = scf_wfn.frequency_analysis['omega'].data
+#print(raw_vibfreq)
 
 # Eliminate imaginary parts of frequencies,
+real = np.real(raw_vibfreq)
+#print(real)
 # round the frequencies (to the nearest whole number),
+round = np.round(real, decimals=0)
+#print(round)
 # and extract only the *non-zero* frequencies
-
+nonzero_freq_list = []
+for i in round:
+   if i > 0:
+      nonzero_freq_list.append(i)
+#print(nonzero_freq_list)
 
 # Determine the unique non-zero frequencies and 
 # the number of times each such frequency occurs;
 # store these in a NumPy array in the format: 
 # {frequency, count} (i.e, one line per freq.)
+unique = np.array(np.unique(nonzero_freq_list, return_counts=True))
+#print(unique)
 
+freq_degen = np.transpose(unique)
+print(freq_degen)
 
 # Save the NumPy array with frequency and count data
 # to a text file with the header line: 'freq degen'
+psi4.set_output_file('methane_vibfreq_degen.txt', False)
 
+file = open ("methane_vibfreq_degen.txt", "a")
+file.write ("freq degen\n")
+for i in freq_degen:
+   file.write("{} {}\n".format(i[0], i[1]))
+file.close()
 
