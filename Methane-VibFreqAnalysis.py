@@ -29,20 +29,21 @@ psi4.set_output_file(file_prefix + '_vibfreq.dat', False)
 scf_energy, scf_wfn = psi4.frequency('scf/cc-pVDZ', molecule=ch4, return_wfn=True, dertype='gradient')
 
 # Save "raw" frequencies into a variable
-print(scf_wfn.frequency_analysis) # this command is just to get you started!
+frequencies = scf_wfn.frequency_analysis['omega'].data # this command is just to get you started!
 
 # Eliminate imaginary parts of frequencies,
+frequencies2 = np.real(frequencies)
 # round the frequencies (to the nearest whole number),
+frequencies_rounded = np.round(frequencies2)
 # and extract only the *non-zero* frequencies
-
-
-# Determine the unique non-zero frequencies and 
+frequencies_abovezero = frequencies_rounded[frequencies_rounded>0]
+# Determine the unique non-zero frequencies and
 # the number of times each such frequency occurs;
 # store these in a NumPy array in the format: 
 # {frequency, count} (i.e, one line per freq.)
-
-
+(frequency, count)= np.unique(frequencies_abovezero, return_counts = True)
+frequencies_final = np.asarray((frequency, count)).T
 # Save the NumPy array with frequency and count data
 # to a text file with the header line: 'freq degen'
-
+np.savetxt('frequency degeneracies.txt', frequencies_final, header = 'freq degen')
 
