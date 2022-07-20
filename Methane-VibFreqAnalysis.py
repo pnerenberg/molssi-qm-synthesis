@@ -1,3 +1,4 @@
+from fileinput import filename
 import psi4
 import numpy as np
 
@@ -34,15 +35,20 @@ print(scf_wfn.frequency_analysis) # this command is just to get you started!
 # Eliminate imaginary parts of frequencies,
 # round the frequencies (to the nearest whole number),
 # and extract only the *non-zero* frequencies
-
-
+# print(scf_wfn.frequency_analysis['omega'])
+# print(scf_wfn.frequency_analysis['omega'].data)
+frequencies = scf_wfn.frequency_analysis['omega'].data.real.round(decimals=2)
+print(frequencies)
 # Determine the unique non-zero frequencies and 
 # the number of times each such frequency occurs;
 # store these in a NumPy array in the format: 
 # {frequency, count} (i.e, one line per freq.)
 
+unique_frequencies = np.unique(frequencies, return_counts=True)
+organized_frequencies = np.transpose(unique_frequencies)
 
+print(organized_frequencies)
 # Save the NumPy array with frequency and count data
 # to a text file with the header line: 'freq degen'
 
-
+np.savetxt(fname='freq_degen', X=organized_frequencies)
